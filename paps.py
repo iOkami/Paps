@@ -8,8 +8,8 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 USE_BASIC_AUTH = 1
 url = "https://192.168.10.198"
-username = "manage"
-password = "!manage"
+username = "hit"
+password = "Hit234"
 # if USE_BASIC_AUTH:
 #     # HTTP basic authentication
 headers = {'datatype':'json'}
