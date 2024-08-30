@@ -8,7 +8,7 @@ import hashlib
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 USE_BASIC_AUTH = 1
-url = "http://192.168.10.198"
+url = "http://192.168.10.238"
 username = "hit"
 password = "Hit#1234"
 # if USE_BASIC_AUTH == 1:
