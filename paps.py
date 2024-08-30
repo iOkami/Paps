@@ -10,11 +10,12 @@ USE_BASIC_AUTH = 1
 url = "http://192.168.10.238"
 username = "hit"
 password = "Hit#1234"
-# if USE_BASIC_AUTH:
+# if USE_BASIC_AUTH == 1:
 #     # HTTP basic authentication
 headers = {'datatype':'json'}
 # r = requests.get(url + '/api/login', auth=(username, password), headers=headers, verify=False)
-r = requests.get(url + '/api/login/d34f7553a8c4e0b07fb98c375a236496', headers=headers, verify=False)
+r = requests.get('http://192.168.10.238/api/login/d34f7553a8c4e0b07fb98c375a236496', verify=False)
+
 # else:
     # SHA-256 authentication
 # auth_bytes = bytes(username + '_' + password, 'utf-8')
