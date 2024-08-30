@@ -9,7 +9,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 USE_BASIC_AUTH = 1
 url = "https://192.168.10.238"
 username = "hit"
-password = "Hit234"
+password = "Hit#1234"
 # if USE_BASIC_AUTH:
 #     # HTTP basic authentication
 headers = {'datatype':'json'}
