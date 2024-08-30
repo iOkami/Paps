@@ -12,14 +12,14 @@ username = "hit"
 password = "Hit#1234"
 # if USE_BASIC_AUTH:
 #     # HTTP basic authentication
-#     headers = {'datatype':'json'}
-#     r = requests.get(url + '/api/login', auth=(username, password), headers=headers, verify=False)
+headers = {'datatype':'json'}
+r = requests.get(url + '/api/login', auth=(username, password), headers=headers, verify=False)
 # else:
     # SHA-256 authentication
-auth_bytes = bytes(username + '_' + password, 'utf-8')
-auth_string = hashlib.sha256(auth_bytes).hexdigest()
-headers = {'datatype':'json'}
-r = requests.get(url + '/api/login/' + auth_string, headers=headers, verify=False )
+# auth_bytes = bytes(username + '_' + password, 'utf-8')
+# auth_string = hashlib.sha256(auth_bytes).hexdigest()
+# headers = {'datatype':'json'}
+# r = requests.get(url + '/api/login/' + auth_string, headers=headers, verify=False )
 print(r)
 print(r.text)
 # # Extract session key from response
