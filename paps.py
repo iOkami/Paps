@@ -7,7 +7,7 @@ import hashlib
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 USE_BASIC_AUTH = 1
-url = "http://192.168.10.198"
+url = "https://192.168.10.198"
 username = "hit"
 password = "Hit#1234"
 # if USE_BASIC_AUTH:
@@ -22,17 +22,17 @@ headers = {'datatype':'json'}
 r = requests.get(url + '/api/login/' + auth_string, headers=headers, verify=False )
 print(r)
 print(r.text)
-# Extract session key from response
-response = json.loads(r.content.decode('utf-8'))
-sessionKey = response['status'][0]['response']
+# # Extract session key from response
+# response = json.loads(r.content.decode('utf-8'))
+# sessionKey = response['status'][0]['response']
 
-print(sessionKey)
-# Obtain the health of the system
-headers = {'sessionKey': sessionKey, 'datatype':'json'}
-r = requests.get(url+'/api/show/system', headers=headers, verify=False)
+# print(sessionKey)
+# # Obtain the health of the system
+# headers = {'sessionKey': sessionKey, 'datatype':'json'}
+# r = requests.get(url+'/api/show/system', headers=headers, verify=False)
 
-print(r)
-print(r.text)
+# print(r)
+# print(r.text)
 
 # print(r.content.decode('utf-8'))
 # response = json.loads(r.content)
