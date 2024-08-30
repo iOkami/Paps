@@ -14,7 +14,7 @@ password = "Hit#1234"
 #     # HTTP basic authentication
 headers = {'datatype':'json'}
 # r = requests.get(url + '/api/login', auth=(username, password), headers=headers, verify=False)
-r = requests.get('http://192.168.10.238/api/login/d34f7553a8c4e0b07fb98c375a236496', verify=False)
+r = requests.get(f'{url}/api/login/d34f7553a8c4e0b07fb98c375a236496', verify=False)
 
 # else:
     # SHA-256 authentication
