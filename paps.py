@@ -2,6 +2,7 @@ import sys
 import requests
 import json
 import hashlib
+
 # NOTE: This is to suppress the insecure connection warning for certificate
 # verification.
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
