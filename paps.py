@@ -61,8 +61,10 @@ def login():
     md5_hash = hashlib.md5(hash_input.encode()).hexdigest()
 
     r = requests.get(url + f'/api/login/{md5_hash}', headers=headers, verify=False)
-
+    print(r)
     response = json.loads(r.content)
+
+    print(response)
     return(response['status'][0]['response'])
 
 def SysInfo():
