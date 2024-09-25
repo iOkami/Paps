@@ -63,8 +63,8 @@ def login():
     hash_input = f"{usuario}{senha}"
     md5_hash = hashlib.md5(hash_input.encode()).hexdigest()
 
-    print(f'hash_input: {hash_input}')
-    print(f'md5_hash: {md5_hash}')
+    print(hash_input)
+    print(md5_hash)
 
     sys.exit(1)
 
