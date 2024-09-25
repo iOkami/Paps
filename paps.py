@@ -57,7 +57,13 @@ def login():
     # Login and obtain the session key.
     headers = {'datatype': 'json', 'Authorization': basic_auth(usuario, senha)}
     r = requests.get(url + '/api/login/', headers=headers, verify=False)
-    response = json.loads(r.content)
+    # response = json.loads(r.content)
+
+    print(r)
+    print(r.text)
+    print(r.content)
+
+    sys.exit(1)
     return(response['status'][0]['response'])
 
 def SysInfo():
