@@ -56,17 +56,17 @@ def basic_auth(username, password):
 def login():
     # Login and obtain the session key.
     headers = {'datatype': 'json', 
-               'Content-Type': 'application/json',
                'Authorization': basic_auth(usuario, senha)}
     print(headers)
-    r = requests.get(url + '/api/login/', headers=headers, verify=False)
-    # response = json.loads(r.content)
+    # r = requests.get(url + '/api/login/', headers=headers, verify=False)
+    r = requests.get(url + '/api/login/b68dcd2c16fb0cd883cc70f6a0f4d856', headers=headers, verify=False)
 
     print(r)
     print(r.text)
     print(r.content)
 
-    sys.exit(1)
+    response = json.loads(r.content)
+
     return(response['status'][0]['response'])
 
 def SysInfo():
