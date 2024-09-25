@@ -62,7 +62,9 @@ def login():
 
     hash_input = f"{usuario}{senha}"
     md5_hash = hashlib.md5(hash_input.encode()).hexdigest()
-    print(md5_hash)
+
+    print(f'{hash_input: hash_input}')
+    print(f'{md5_hash: md5_hash}')
 
     r = requests.get(url + '/api/login/b68dcd2c16fb0cd883cc70f6a0f4d856', headers=headers, verify=False)
 
