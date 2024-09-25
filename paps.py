@@ -66,6 +66,8 @@ def login():
     print(f'hash_input: {hash_input}')
     print(f'md5_hash: {md5_hash}')
 
+    sys.exit(1)
+
     r = requests.get(url + '/api/login/b68dcd2c16fb0cd883cc70f6a0f4d856', headers=headers, verify=False)
 
     print(r)
