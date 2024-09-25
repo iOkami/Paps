@@ -18,7 +18,6 @@ def main():
     discovery = sys.argv[4]
 
     sessionKey = login()
-    print(f"Session key: {sessionKey}")
     if sessionKey != "Invalid sessionkey":
         if discovery == "sysinfo":
             SysInfo()
@@ -55,9 +54,7 @@ def basic_auth(username, password):
 
 def login():
     # Login and obtain the session key.
-    headers = {'datatype': 'json', 
-               'Authorization': basic_auth(usuario, senha)}
-    print(headers)
+    headers = {'datatype': 'json', 'Authorization': basic_auth(usuario, senha)}
     # r = requests.get(url + '/api/login/', headers=headers, verify=False)
 
     hash_input = f"{usuario}{senha}"
@@ -65,12 +62,7 @@ def login():
 
     r = requests.get(url + f'/api/login/{md5_hash}', headers=headers, verify=False)
 
-    print(r)
-    print(r.text)
-    print(r.content)
-
     response = json.loads(r.content)
-
     return(response['status'][0]['response'])
 
 def SysInfo():
@@ -121,10 +113,6 @@ def Disks():
     # Obtain the health of the system.
     headers = {'sessionKey': sessionKey, 'datatype': 'json'}
     r = requests.get(url + '/api/show/disks', headers=headers, verify=False)
-
-    print(f"r: {r}")
-    print(f"r.text: {r.text}")
-
     response = json.loads(r.content)
     response = response['drives']
     response = json.dumps(response, separators=(',',':'))
