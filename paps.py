@@ -55,16 +55,16 @@ def basic_auth(username, password):
 
 def login():
     # Login and obtain the session key.
-    headers = {'datatype': 'json',
-               'Content-Type': 'application/json',
+    headers = {'datatype': 'json', 
                'Authorization': basic_auth(usuario, senha)}
     print(headers)
     # r = requests.get(url + '/api/login/', headers=headers, verify=False)
 
     hash_input = f"{usuario}{senha}"
     md5_hash = hashlib.md5(hash_input.encode()).hexdigest()
+    print(md5_hash)
 
-    r = requests.get(url + f'/api/login/{md5_hash}', headers=headers, verify=False)
+    r = requests.get(url + '/api/login/b68dcd2c16fb0cd883cc70f6a0f4d856', headers=headers, verify=False)
 
     print(r)
     print(r.text)
