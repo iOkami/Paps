@@ -65,6 +65,7 @@ def login():
     response = json.loads(r.content)
 
     print(response)
+    sys.exit(1)
     return(response['status'][0]['response'])
 
 def SysInfo():
