@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-
-#HIT
 import sys
 import requests
 import json
@@ -63,6 +61,8 @@ def login():
     md5_hash = hashlib.md5(hash_input.encode()).hexdigest()
 
     r = requests.get(url + f'/api/login/{md5_hash}', headers=headers, verify=False)
+
+    print(r.text)
 
     response = json.loads(r.content)
     return(response['status'][0]['response'])
