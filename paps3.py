@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# HIT - Versao: 1.1
+# HIT - Versao: 1.2
 
 import sys
 import requests
@@ -15,7 +15,7 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 def dd(text):
-    print(text)
+    print('1.2')
     # pyperclip.copy(text)
     sys.exit(1)
 
@@ -27,8 +27,6 @@ def main():
             root = ET.fromstring(login(args.https, ip, args.user, args.password))
             element_response = root.find('.//PROPERTY[@name="response"]').text
             element_responseType = root.find('.//PROPERTY[@name="response-type"]').text
-
-            print(f'token: {element_responseType}')
 
             if element_responseType.upper() != "ERROR":
                 response = apiRequest(args.https, ip, args.endpoint, element_response)
@@ -50,8 +48,6 @@ def login(https, apiIP, usuario, senha):
     # headers = {'Content-Type': 'application/json'}
     hash_input = f"{usuario}_{senha}"
     md5_hash = hashlib.md5(hash_input.encode()).hexdigest()
-    print(md5_hash)
-    print(f'{https}://{apiIP}/api/login/{md5_hash}')
     r = requests.get(f'{https}://{apiIP}/api/login/{md5_hash}', verify=False, timeout=10)
     print(r.text)
     return(r.text)
@@ -59,7 +55,7 @@ def login(https, apiIP, usuario, senha):
 def apiRequest(https, apiIP, apiEndpoint, sessionKey):
     headers = {'sessionKey': sessionKey} #, 'datatype': 'json'}
     r = requests.get(f"{https}://{apiIP}{apiEndpoint}", headers=headers, verify=False)
-
+    print(r.text)
     return(r.text)
 
 def getDisks(xml):
