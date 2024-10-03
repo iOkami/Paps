@@ -50,7 +50,9 @@ def login(https, apiIP, usuario, senha):
     # headers = {'Content-Type': 'application/json'}
     hash_input = f"{usuario}_{senha}"
     md5_hash = hashlib.md5(hash_input.encode()).hexdigest()
+    print(md5_hash)
     r = requests.get(f'{https}://{apiIP}/api/login/{md5_hash}', verify=False, timeout=10)
+    print(r)
     return(r.text)
 
 def apiRequest(https, apiIP, apiEndpoint, sessionKey):
