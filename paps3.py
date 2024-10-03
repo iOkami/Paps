@@ -54,8 +54,8 @@ def apiRequest(https, apiIP, apiEndpoint, sessionKey):
     headers = {'sessionKey': sessionKey} #, 'datatype': 'json'}
     r = requests.get(f"{https}://{apiIP}{apiEndpoint}", headers=headers, verify=False)
     print(sessionKey)
-    dd(r.text)
-    return(r.text)
+    print(r.text)
+    return(1)#r.text)
 
 def getDisks(xml):
     root = ET.fromstring(xml)
