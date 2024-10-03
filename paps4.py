@@ -15,11 +15,12 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 def dd(text):
-    print('1.4')
+    print(text)
     # pyperclip.copy(text)
     sys.exit(1)
 
 def main():
+    print('1.5')
     args = getArgs()
     for ip in [args.controllera, args.controllerb]:
         try:
@@ -51,9 +52,12 @@ def login(https, apiIP, usuario, senha):
     return(r.text)
 
 def apiRequest(https, apiIP, apiEndpoint, sessionKey):
-    headers = {'sessionKey': sessionKey,
-               'Content-Type': 'application/json'} #, 'datatype': 'json'}
+    # headers = {'sessionKey': sessionKey,
+            #    'Content-Type': 'application/json'} #, 'datatype': 'json'}
+    headers = {'sessionKey': sessionKey, 'datatype':'json'}
+
     r = requests.get(f"{https}://{apiIP}{apiEndpoint}", headers=headers, verify=False)
+
     print(sessionKey)
     print(r.text)
     return(1)#r.text)
