@@ -31,6 +31,7 @@ def main():
             print(element_responseType.upper())
 
             if element_responseType.upper() != "ERROR":
+                print('controler b')
                 response = apiRequest(args.https, ip, args.endpoint, element_response)
                 break
             else:
