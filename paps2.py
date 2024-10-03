@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# HIT - Versao: 1
+# HIT - Versao: 1.1
 
 import sys
 import requests
@@ -21,12 +21,14 @@ def dd(text):
 
 def main():
     args = getArgs()
-
+    print('start')
     for ip in [args.controllera, args.controllerb]:
         try:
             root = ET.fromstring(login(args.https, ip, args.user, args.password))
             element_response = root.find('.//PROPERTY[@name="response"]').text
             element_responseType = root.find('.//PROPERTY[@name="response-type"]').text
+
+            print(f'token: {element_responseType}')
 
             if element_responseType.upper() != "ERROR":
                 response = apiRequest(args.https, ip, args.endpoint, element_response)
