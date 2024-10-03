@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# HIT - Versao: 1.3
+# HIT - Versao: 1.4
 
 import sys
 import requests
@@ -21,17 +21,13 @@ def dd(text):
 
 def main():
     args = getArgs()
-    print('start')
     for ip in [args.controllera, args.controllerb]:
         try:
             root = ET.fromstring(login(args.https, ip, args.user, args.password))
             element_response = root.find('.//PROPERTY[@name="response"]').text
             element_responseType = root.find('.//PROPERTY[@name="response-type"]').text
 
-            print(element_responseType.upper())
-
             if element_responseType.upper() != "ERROR":
-                print('controler b')
                 response = apiRequest(args.https, ip, args.endpoint, element_response)
                 break
             else:
@@ -47,19 +43,18 @@ def main():
     print(response)
 
 def login(https, apiIP, usuario, senha):
-    print('login')
     # headers = {'datatype':'json'}
     # headers = {'Content-Type': 'application/json'}
     hash_input = f"{usuario}_{senha}"
     md5_hash = hashlib.md5(hash_input.encode()).hexdigest()
     r = requests.get(f'{https}://{apiIP}/api/login/{md5_hash}', verify=False, timeout=10)
-    print(r.text)
     return(r.text)
 
 def apiRequest(https, apiIP, apiEndpoint, sessionKey):
     headers = {'sessionKey': sessionKey} #, 'datatype': 'json'}
     r = requests.get(f"{https}://{apiIP}{apiEndpoint}", headers=headers, verify=False)
-    print(r.text)
+    print(sessionKey)
+    dd(r.text)
     return(r.text)
 
 def getDisks(xml):
