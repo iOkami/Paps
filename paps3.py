@@ -28,6 +28,8 @@ def main():
             element_response = root.find('.//PROPERTY[@name="response"]').text
             element_responseType = root.find('.//PROPERTY[@name="response-type"]').text
 
+            print(element_responseType.upper())
+
             if element_responseType.upper() != "ERROR":
                 response = apiRequest(args.https, ip, args.endpoint, element_response)
                 break
@@ -37,7 +39,7 @@ def main():
         except Exception as e:
             response = e
             continue
-    
+
     if args.endpoint == "/api/show/disks":
         response = getDisks(response)
 
