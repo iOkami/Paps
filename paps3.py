@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# HIT - Versao: 1.2
+# HIT - Versao: 1.3
 
 import sys
 import requests
@@ -47,6 +47,7 @@ def main():
     print(response)
 
 def login(https, apiIP, usuario, senha):
+    print('login')
     # headers = {'datatype':'json'}
     # headers = {'Content-Type': 'application/json'}
     hash_input = f"{usuario}_{senha}"
