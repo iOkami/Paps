@@ -1,141 +1,94 @@
 #!/usr/bin/env python3
+# HIT - Versao: 1
 
 import sys
 import requests
 import json
 import hashlib
 import sys
-from base64 import b64encode
+import argparse
+import xml.etree.ElementTree as ET
+# import pyperclip
+
 # NOTE: This is to suppress the insecure connection warning for certificate verification.
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
+def dd(text):
+    print(text)
+    # pyperclip.copy(text)
+    sys.exit(1)
+
 def main():
-    global usuario, senha, url, sessionKey, discovery
-    usuario = sys.argv[1]
-    senha = sys.argv[2]
-    url = "https://" + sys.argv[3]
-    discovery = sys.argv[4]
+    args = getArgs()
 
-    sessionKey = login()
-    if sessionKey != "Invalid sessionkey":
-        if discovery == "sysinfo":
-            SysInfo()
+    for ip in [args.controllera, args.controllerb]:
+        try:
+            root = ET.fromstring(login(args.https, ip, args.user, args.password))
+            element_response = root.find('.//PROPERTY[@name="response"]').text
+            element_responseType = root.find('.//PROPERTY[@name="response-type"]').text
 
-        elif discovery == "volumes":
-            Volumes()
+            if element_responseType.upper() != "ERROR":
+                response = apiRequest(args.https, ip, args.endpoint, element_response)
+                break
+            else:
+                response = element_responseType
 
-        elif discovery == "volumestatistics":
-            VolumeStatistics()
+        except Exception as e:
+            response = e
+            continue
+    
+    if args.endpoint == "/api/show/disks":
+        response = getDisks(response)
 
-        elif discovery == "pools":
-            Pools()
+    print(response)
 
-        elif discovery == "powersupplies":
-            PowerSupplies()
-
-        elif discovery == "disks":
-            Disks()
-        
-        elif discovery == "fans":
-            Fans()
-            
-        elif discovery == "sensorstatus":
-            Sensors()
-
-        else:
-            print("Discovery não encontrado")
-    else:
-        print("Invalid session key. Unable to obtain system information.")
-
-def basic_auth(username, password):
-	token = b64encode(f"{username}:{password}".encode('utf-8')).decode("ascii")
-	return f'Basic {token}'
-
-def login():
-    # Login and obtain the session key.
-    headers = {'datatype': 'json', 'Authorization': basic_auth(usuario, senha)}
-    # r = requests.get(url + '/api/login/', headers=headers, verify=False)
-
+def login(https, apiIP, usuario, senha):
+    # headers = {'datatype':'json'}
+    # headers = {'Content-Type': 'application/json'}
     hash_input = f"{usuario}_{senha}"
     md5_hash = hashlib.md5(hash_input.encode()).hexdigest()
+    r = requests.get(f'{https}://{apiIP}/api/login/{md5_hash}', verify=False, timeout=10)
+    return(r.text)
 
-    r = requests.get(url + f'/api/login/{md5_hash}', headers=headers, verify=False)
+def apiRequest(https, apiIP, apiEndpoint, sessionKey):
+    headers = {'sessionKey': sessionKey} #, 'datatype': 'json'}
+    r = requests.get(f"{https}://{apiIP}{apiEndpoint}", headers=headers, verify=False)
 
-    print(r.text)
+    return(r.text)
 
-    response = json.loads(r.content)
-    return(response['status'][0]['response'])
+def getDisks(xml):
+    root = ET.fromstring(xml)
+    json_element = []
 
-def SysInfo():
-    # Obtain the health of the system.
-    headers = {'sessionKey': sessionKey, 'datatype': 'json'}
-    r = requests.get(url + '/api/show/system', headers=headers, verify=False)
-    response = json.loads(r.content)
-    response = json.dumps(response, separators=(',',':'))
-    print(response)
-    
-def Volumes():
-    # Obtain the health of the system.
-    headers = {'sessionKey': sessionKey, 'datatype': 'json'}
-    r = requests.get(url + '/api/show/volumes', headers=headers, verify=False)
-    response = json.loads(r.content)
-    response = response['volumes']
-    response = json.dumps(response, separators=(',',':'))
-    print(response)
+    for obj in root.findall(".//OBJECT[@basetype='drives']"):
 
-def VolumeStatistics():
-    # Obtain the health of the system.
-    headers = {'sessionKey': sessionKey, 'datatype': 'json'}
-    r = requests.get(url + '/api/show/volume-statistics', headers=headers, verify=False)
-    response = json.loads(r.content)
-    response = response['volume-statistics']
-    response = json.dumps(response, separators=(',',':'))
-    print(response)
+        json_element.append({
+            "durableid": obj.findall(".//PROPERTY[@name='durable-id']")[0].text,
+            "enclosure-id": obj.findall(".//PROPERTY[@name='enclosure-id']")[0].text,
+            "architecture-numeric": obj.findall(".//PROPERTY[@name='architecture-numeric']")[0].text,
+            "health-numeric": obj.findall(".//PROPERTY[@name='health-numeric']")[0].text,
+            "led-status-numeric": obj.findall(".//PROPERTY[@name='led-status-numeric']")[0].text,
+            "status": obj.findall(".//PROPERTY[@name='status']")[0].text,
+            "temperature-numeric": obj.findall(".//PROPERTY[@name='temperature-numeric']")[0].text,
+            "temperature-status-numeric": obj.findall(".//PROPERTY[@name='temperature-status-numeric']")[0].text,
+            "ssd-life-left-numeric": obj.findall(".//PROPERTY[@name='ssd-life-left-numeric']")[0].text,
+        })
 
-def Pools():
-    # Obtain the health of the system.
-    headers = {'sessionKey': sessionKey, 'datatype': 'json'}
-    r = requests.get(url + '/api/show/pools', headers=headers, verify=False)
-    response = json.loads(r.content)
-    response = response['pools']
-    response = json.dumps(response, separators=(',',':'))
-    print(response)
+    return json.dumps(json_element)
 
-def PowerSupplies():
-    # Obtain the health of the system.
-    headers = {'sessionKey': sessionKey, 'datatype': 'json'}
-    r = requests.get(url + '/api/show/power-supplies', headers=headers, verify=False)
-    response = json.loads(r.content)
-    response = response['power-supplies']
-    response = json.dumps(response, separators=(',',':'))
-    print(response)
+def getArgs():
+    parser = argparse.ArgumentParser(description='HIT - Monitoramento Storage DS')
 
-def Disks():
-    # Obtain the health of the system.
-    headers = {'sessionKey': sessionKey, 'datatype': 'json'}
-    r = requests.get(url + '/api/show/disks', headers=headers, verify=False)
-    response = json.loads(r.content)
-    response = response['drives']
-    response = json.dumps(response, separators=(',',':'))
-    print(response)
+    parser.add_argument('-a', '--controllera', required=True, action='store', help='IP Controller A')
+    parser.add_argument('-b', '--controllerb', required=False, action='store', default=None ,help='IP Controller B')
+    parser.add_argument('-u', '--user', required=True, action='store', help='Controller Userr')
+    parser.add_argument('-p', '--password', required=True, action='store', help='Controller Password')
+    parser.add_argument('-e', '--endpoint', required=True, action='store', help='API Endpoint')
+    parser.add_argument('-H', '--https', required=False, action='store', default='https', help='Https')
 
-def Fans():
-    # Obtain the health of the system.
-    headers = {'sessionKey': sessionKey, 'datatype': 'json'}
-    r = requests.get(url + '/api/show/fans', headers=headers, verify=False)
-    response = json.loads(r.content)
-    response = response['fan']
-    response = json.dumps(response, separators=(',',':'))
-    print(response)
+    args = parser.parse_args()
 
-def Sensors():
-    # Obtain the health of the system.
-    headers = {'sessionKey': sessionKey, 'datatype': 'json'}
-    r = requests.get(url + '/api/show/sensor-status', headers=headers, verify=False)
-    response = json.loads(r.content)
-    response = response['sensors']
-    response = json.dumps(response, separators=(',',':'))
-    print(response)
+    return args
 
 main()
