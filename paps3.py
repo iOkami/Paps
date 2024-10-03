@@ -15,7 +15,7 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 def dd(text):
-    print('1.2')
+    print('1.4')
     # pyperclip.copy(text)
     sys.exit(1)
 
@@ -51,7 +51,8 @@ def login(https, apiIP, usuario, senha):
     return(r.text)
 
 def apiRequest(https, apiIP, apiEndpoint, sessionKey):
-    headers = {'sessionKey': sessionKey} #, 'datatype': 'json'}
+    headers = {'sessionKey': sessionKey,
+               'Content-Type': 'application/json'} #, 'datatype': 'json'}
     r = requests.get(f"{https}://{apiIP}{apiEndpoint}", headers=headers, verify=False)
     print(sessionKey)
     print(r.text)
