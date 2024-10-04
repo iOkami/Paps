@@ -20,7 +20,7 @@ def dd(text):
     sys.exit(1)
 
 def main():
-    print('1.5')
+    print('1.6')
     args = getArgs()
     for ip in [args.controllera, args.controllerb]:
         try:
@@ -55,7 +55,9 @@ def login(https, apiIP, usuario, senha):
 def apiRequest(https, apiIP, apiEndpoint, sessionKey):
     # headers = {'sessionKey': sessionKey,
             #    'Content-Type': 'application/json'} #, 'datatype': 'json'}
-    headers = {'sessionKey': sessionKey, 'datatype':'json'}
+    # headers = {'sessionKey': sessionKey, 'datatype':'json'}
+    headers = {'Cookie': f'wbisessionkey={sessionKey}', 'datatype':'json'}
+
 
     r = requests.get(f"{https}://{apiIP}{apiEndpoint}", headers=headers, verify=False)
 
