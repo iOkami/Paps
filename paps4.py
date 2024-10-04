@@ -20,7 +20,6 @@ def dd(text):
     sys.exit(1)
 
 def main():
-    print('1.6')
     args = getArgs()
     for ip in [args.controllera, args.controllerb]:
         try:
@@ -49,21 +48,17 @@ def login(https, apiIP, usuario, senha):
     hash_input = f"{usuario}_{senha}"
     md5_hash = hashlib.md5(hash_input.encode()).hexdigest()
     r = requests.get(f'{https}://{apiIP}/api/login/{md5_hash}', verify=False, timeout=10)
-    print(r.text)
     return(r.text)
 
 def apiRequest(https, apiIP, apiEndpoint, sessionKey):
     # headers = {'sessionKey': sessionKey,
             #    'Content-Type': 'application/json'} #, 'datatype': 'json'}
     # headers = {'sessionKey': sessionKey, 'datatype':'json'}
-    headers = {'Cookie': f'wbisessionkey={sessionKey}', 'datatype':'json'}
+    headers = {'Cookie': f'wbisessionkey={sessionKey}'}
 
 
     r = requests.get(f"{https}://{apiIP}{apiEndpoint}", headers=headers, verify=False)
-
-    print(sessionKey)
-    print(r.text)
-    return(1)#r.text)
+    return(r.text)
 
 def getDisks(xml):
     root = ET.fromstring(xml)
