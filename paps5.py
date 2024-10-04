@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# HIT - Versao: 1.4
+# HIT - Versao: 1
 
 import sys
 import requests
@@ -37,8 +37,8 @@ def main():
             response = e
             continue
 
-    # if args.endpoint == "/api/show/disks":
-    #     response = getDisks(response)
+    if args.endpoint == "/api/show/disks":
+        response = filterXML(response, ["durable-id","enclosure-id","architecture-numeric","health-numeric","led-status-numeric","temperature-status-numeric","temperature-status-numeric", "ssd-life-left-numeric"])
 
     print(response)
 
@@ -60,25 +60,43 @@ def apiRequest(https, apiIP, apiEndpoint, sessionKey):
     r = requests.get(f"{https}://{apiIP}{apiEndpoint}", headers=headers, verify=False)
     return(r.text)
 
-def getDisks(xml):
+def filterXML(xml, propertyList):    
+    # xml_file_path = '/tmp/paps.xml'
+    # tree = ET.parse(xml_file_path)
+    # root = tree.getroot()
     root = ET.fromstring(xml)
     json_element = []
-
     for obj in root.findall(".//OBJECT[@basetype='drives']"):
+        json_obj = {}
 
-        json_element.append({
-            "durableid": obj.findall(".//PROPERTY[@name='durable-id']")[0].text,
-            "enclosure-id": obj.findall(".//PROPERTY[@name='enclosure-id']")[0].text,
-            "architecture-numeric": obj.findall(".//PROPERTY[@name='architecture-numeric']")[0].text,
-            "health-numeric": obj.findall(".//PROPERTY[@name='health-numeric']")[0].text,
-            "led-status-numeric": obj.findall(".//PROPERTY[@name='led-status-numeric']")[0].text,
-            "status": obj.findall(".//PROPERTY[@name='status']")[0].text,
-            "temperature-numeric": obj.findall(".//PROPERTY[@name='temperature-numeric']")[0].text,
-            "temperature-status-numeric": obj.findall(".//PROPERTY[@name='temperature-status-numeric']")[0].text,
-            "ssd-life-left-numeric": obj.findall(".//PROPERTY[@name='ssd-life-left-numeric']")[0].text,
-        })
+        for property in propertyList:
+            propertyValue = obj.find(f".//PROPERTY[@name='{property}']")
+            json_obj[property] = propertyValue.text if propertyValue is not None and propertyValue.text is not None else "N/A"
 
-    return json.dumps(json_element)
+
+        json_element.append(json_obj)
+
+    return(json.dumps(json_element))
+
+# def getDisks(xml):
+#     root = ET.fromstring(xml)
+#     json_element = []
+
+#     for obj in root.findall(".//OBJECT[@basetype='drives']"):
+
+#         json_element.append({
+#             "durableid": obj.findall(".//PROPERTY[@name='durable-id']")[0].text,
+#             "enclosure-id": obj.findall(".//PROPERTY[@name='enclosure-id']")[0].text,
+#             "architecture-numeric": obj.findall(".//PROPERTY[@name='architecture-numeric']")[0].text,
+#             "health-numeric": obj.findall(".//PROPERTY[@name='health-numeric']")[0].text,
+#             "led-status-numeric": obj.findall(".//PROPERTY[@name='led-status-numeric']")[0].text,
+#             "status": obj.findall(".//PROPERTY[@name='status']")[0].text,
+#             "temperature-numeric": obj.findall(".//PROPERTY[@name='temperature-numeric']")[0].text,
+#             "temperature-status-numeric": obj.findall(".//PROPERTY[@name='temperature-status-numeric']")[0].text,
+#             "ssd-life-left-numeric": obj.findall(".//PROPERTY[@name='ssd-life-left-numeric']")[0].text,
+#         })
+
+#     return json.dumps(json_element)
 
 def getArgs():
     parser = argparse.ArgumentParser(description='HIT - Monitoramento Storage DS')
@@ -89,9 +107,11 @@ def getArgs():
     parser.add_argument('-p', '--password', required=True, action='store', help='Controller Password')
     parser.add_argument('-e', '--endpoint', required=True, action='store', help='API Endpoint')
     parser.add_argument('-H', '--https', required=False, action='store', default='https', help='Https')
+    # parser.add_argument('-f', '--filter', required=False, action='store', default=None, help='Filter')
 
     args = parser.parse_args()
 
     return args
 
+# filterXML()
 main()
