@@ -37,8 +37,8 @@ def main():
             response = e
             continue
 
-    if args.endpoint == "/api/show/disks":
-        response = getDisks(response)
+    # if args.endpoint == "/api/show/disks":
+    #     response = getDisks(response)
 
     print(response)
 
