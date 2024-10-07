@@ -17,7 +17,8 @@ def main():
     args = getArgs()
     for ip in [args.controllera, args.controllerb]:
         try:
-            root = ET.fromstring(login(args.https, ip, args.user, args.password))
+            loginResponse = login(args.https, ip, args.user, args.password)
+            root = ET.fromstring(loginResponse)
             element_response = root.find('.//PROPERTY[@name="response"]').text
             element_responseType = root.find('.//PROPERTY[@name="response-type"]').text
 
@@ -26,16 +27,17 @@ def main():
                 logout(args.https, ip, element_response)
                 break
             else:
-                response = element_responseType
+                response = loginResponse
 
         except Exception as e:
             response = e
             continue
 
-    if args.filter == "json":
-        response = convertToJson(response)
-    elif args.filter != None:
-        response = filterXML(response, args.filter.split("/"))
+    if element_responseType.upper() != "ERROR":
+        if args.filter == "json":
+            response = convertToJson(response)
+        elif args.filter != None:
+            response = filterXML(response, args.filter.split("/"))
 
     print(response)
 
