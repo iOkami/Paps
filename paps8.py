@@ -9,6 +9,8 @@ import sys
 import argparse
 import subprocess
 import xml.etree.ElementTree as ET
+from collections import defaultdict
+
 
 try:
     import xmltodict
@@ -46,11 +48,18 @@ def main():
 
     response = xmltodict.parse(response)['RESPONSE']["OBJECT"]
 
+    # # inicio
+    # response = xmltodict.parse(response)
+    # response = extract_name_text_pairs(response)
+    # sys.exit(response)
+    # # fim
+
     filter_keys = None
     if args.filter != None:
         filter_keys = args.filter.split("/")
 
-    response = filter_data(response, filter_keys)
+    # response = filter_data(response, filter_keys)
+    response = filter_data(response)
     print(json.dumps(response))
 
 def login(https, apiIP, usuario, senha):
@@ -87,7 +96,44 @@ def save_session(data):
     with open('/tmp/HIT-HPE-MSA.txt', "w") as file:
         file.write(data)
 
-def filter_data(json_data, keys):
+def filter_data(json_data):
+    grouped_data = defaultdict(list)  # Armazena objetos agrupados pelo "@basetype"
+
+    def process_object(obj):
+        resultado = {}
+        
+        # Extrai propriedades no nível atual
+        propriedades = obj.get("PROPERTY", [])
+        for propriedade in propriedades:
+            nome = propriedade.get("@name")
+            resultado[nome] = propriedade.get("#text", "N/A")
+        
+        # Verifica se há objetos aninhados
+        objetos = obj.get("OBJECT", [])
+
+        # Se OBJECT é uma lista, processa cada item recursivamente
+        if isinstance(objetos, list):
+            resultado["OBJECT"] = []
+            for sub_objeto in objetos:
+                resultado["OBJECT"].append({
+                    sub_objeto["@name"]: process_object(sub_objeto)
+                })
+        # Se OBJECT é um dicionário, processa recursivamente
+        elif isinstance(objetos, dict):
+            resultado["OBJECT"] = {objetos["@name"]: process_object(objetos)}
+        
+        return resultado
+
+    # Processa cada objeto e agrupa pelo "@basetype"
+    for obj in json_data:
+        basetype = obj.get("@basetype", "unknown")  # Pega o valor de "@basetype"
+        processed_obj = process_object(obj)
+        grouped_data[basetype].append(processed_obj)
+
+    return grouped_data
+
+
+def filter_data_bkp(json_data, keys):
     response = []
     
     for obj in json_data:
