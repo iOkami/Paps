@@ -24,7 +24,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 def main():
     args = get_args()
 
-    response = check_session(args.https, args.endpoint)
+    response = check_session(f"{args.controllera.replace('.','')}", args.https, args.endpoint)
     
     if  response == False:
         for ip in [args.controllera, args.controllerb]:
@@ -34,7 +34,7 @@ def main():
                 element_responseType = root.find('.//PROPERTY[@name="response-type"]').text
 
                 if element_responseType.upper() != "ERROR":
-                    save_session(f"{ip}:{element_response}")
+                    save_session(f"{args.controllera.replace('.','')}",f"{ip}:{element_response}")
                     response = api_request(args.https, ip, args.endpoint, element_response)
                     # logout(args.https, ip, element_response)
                     break
@@ -74,9 +74,9 @@ def api_request(https, apiIP, apiEndpoint, sessionKey):
     r = requests.get(f"{https}://{apiIP}{apiEndpoint}", headers=headers, verify=False)
     return(r.text)
 
-def check_session(https, endpoint):
+def check_session(file, https, endpoint):
     try:
-        with open('/tmp/HIT-HPE-MSA.txt', "r") as file:
+        with open(f'/tmp/HIT-HPE-MSA-{file}.txt', "r") as file:
             file_content = file.read().split(":")
             ip = file_content[0]
             token = file_content[1]
@@ -88,8 +88,8 @@ def check_session(https, endpoint):
     except Exception as e:
         return(False)
 
-def save_session(data):
-    with open('/tmp/HIT-HPE-MSA.txt', "w") as file:
+def save_session(file, data):
+    with open(f'/tmp/HIT-HPE-MSA-{file}.txt', "w") as file:
         file.write(data)
 
 def filter_data(json_data):
