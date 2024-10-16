@@ -43,17 +43,20 @@ def main():
 
             except Exception as e:
                 response = e
-                print(f"\n{response}")
                 continue
 
     response = xmltodict.parse(response)['RESPONSE']["OBJECT"]
 
-    filter_keys = None
-    if args.filter != None:
-        filter_keys = args.filter.split("/")
+    try:
+        filter_keys = None
+        if args.filter != None:
+            filter_keys = args.filter.split("/")
 
-    # response = filter_data(response)
-    print(json.dumps(response))
+        response = filter_data(response)
+        print(json.dumps(response))
+
+    except Exception as e:
+        print(f"Error: {response}")
 
 def login(https, apiIP, usuario, senha):
     hash_input = f"{usuario}_{senha}"
