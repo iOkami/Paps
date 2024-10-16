@@ -9,14 +9,17 @@ import sys
 import argparse
 import subprocess
 import xml.etree.ElementTree as ET
-# import xmltodict
 
+try:
+    import xmltodict
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "xmltodict"])
+    
 # NOTE: This is to suppress the insecure connection warning for certificate verification.
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 def main():
-
     args = get_args()
 
     response = check_session(args.https, args.endpoint)
@@ -48,16 +51,6 @@ def main():
 
     response = filter_data(response, filter_keys)
     print(json.dumps(response))
-
-def check_lib():
-    try:
-        import xmltodict
-        print("A biblioteca xmltodict já está instalada.")
-    except ImportError:
-        print("Biblioteca xmltodict não encontrada, instalando...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "xmltodict"])
-        print("Biblioteca xmltodict instalada com sucesso.")
-
 
 def login(https, apiIP, usuario, senha):
     hash_input = f"{usuario}_{senha}"
@@ -135,5 +128,4 @@ def get_args():
 
     return args
 
-check_lib()
 main()
