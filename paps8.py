@@ -48,18 +48,11 @@ def main():
 
     response = xmltodict.parse(response)['RESPONSE']["OBJECT"]
 
-    # # inicio
-    # response = xmltodict.parse(response)
-    # response = extract_name_text_pairs(response)
-    # sys.exit(response)
-    # # fim
-
     filter_keys = None
     if args.filter != None:
         filter_keys = args.filter.split("/")
 
-    # response = filter_data(response, filter_keys)
-    response = filter_data(response)
+    # response = filter_data(response)
     print(json.dumps(response))
 
 def login(https, apiIP, usuario, senha):
@@ -131,36 +124,6 @@ def filter_data(json_data):
         grouped_data[basetype].append(processed_obj)
 
     return grouped_data
-
-
-def filter_data_bkp(json_data, keys):
-    response = []
-    
-    for obj in json_data:
-        resultado = {}
-
-        propriedades = obj.get("PROPERTY", [])
-
-        for propriedade in propriedades:
-            
-            nome = propriedade.get("@name")
-            
-
-            if keys == None:
-                resultado[nome] = propriedade.get("#text", "N/A")
-            elif nome in keys:
-                resultado[nome] = propriedade.get("#text", "N/A")
-
-
-        objetos = obj.get("OBJECT", False)
-
-        if objetos:
-            # sys.exit(json.dumps(objetos))
-            resultado[objetos['@name']] = filter_data([objetos], None)
-
-        if len(resultado) > 0:
-            response.append(resultado)
-    return response
 
 def get_args():
     parser = argparse.ArgumentParser(description='HIT - Monitoramento Storage DS')
