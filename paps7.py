@@ -41,6 +41,7 @@ def main():
 
             except Exception as e:
                 response = e
+                print(f"\n{response}")
                 continue
 
     response = xmltodict.parse(response)['RESPONSE']["OBJECT"]
